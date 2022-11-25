@@ -1,0 +1,41 @@
+import mlxtend
+from mlxtend.frequent_patterns import apriori
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import association_rules
+
+
+from mlxtend.preprocessing import TransactionEncoder
+l= []
+import csv
+with open("file.csv","r") as file:
+    reader=csv.reader(file)
+    for i in reader:
+        l.append(i)
+l
+
+t=TransactionEncoder()
+t_arry=t.fit(l).transform(l)
+df=pd.DataFrame(t_arry, columns=t.columns_)
+df
+
+top selling with support : 
+from mlxtend.frequent_patterns import apriori
+apriori(df, min_support=0.02, use_colnames=True)
+
+frequent itemsets :
+df1=apriori(df, min_support=0.05, use_colnames=True)
+df1
+
+frequent_itemsets=apriori(df,min_support=0.02, use_colnames=True)
+frequent_itemsets[(frequent_itemsets['itemsets'].apply(lambda x: len(x))==2)]
+
+
+top 10 association rules
+frequent_itemset=apriori(df,min_support=0.02, use_colnames=True)
+rule=association_rules(frequent_itemset,metric="confidence",min_threshold=0)
+rule.sort_values(by="confidence",ascending=False).head(10)
+
+other metric asc:
+frequent_itemset=apriori(df,min_support=0.02, use_colnames=True)
+rule=association_rules(frequent_itemset,metric="lift",min_threshold=1.0)
+rule.sort_values(by="confidence",ascending=False).head(10)
