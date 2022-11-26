@@ -1,0 +1,49 @@
+df = pd.DataFrame(pd.pivot_table(ratings, index='userId', columns='movieId', values='rating', fill_value=0))
+df
+
+df2 =pd.merge(ratings,movies, on='movieId',how='left',sort='false')
+
+
+from scipy.spatial.distance import squareform
+from scipy.spatial.distance import pdist
+pairwise = pd.DataFrame(
+    squareform(pdist(df)),
+    columns = df.index,
+    index = df.index
+)
+
+pairwise
+
+
+from sklearn.metrics.pairwise import cosine_similarity
+x =cosine_similarity(df)
+y=pd.DataFrame(x)
+y
+
+distance_matrix = pairwise_distances(df, metric='cosine')
+pd.DataFrame(distance_matrix)
+
+# 7.Use the “movies” dataset to find out the names of movies, user 1 and user 338 have watched in common and how they have rated each one of them.
+lis=set(ratings.loc[ratings.userId==1, 'movieId']).intersection(set(ratings.loc[ratings.userId==338, 'movieId']))
+
+set(ratings.loc[((ratings.userId==2) & (ratings.rating>=4.0)), 'movieId']).intersection(set(ratings.loc[((ratings.userId==338) & (ratings.rating>=4.0)), 'movieId']))
+
+
+6.Find the 5 most similar user for user with user Id 25.
+(distance_matrix[24]).argsort()[1:6]+1
+
+
+# 9.Create a pivot table for representing the similarity among movies using correlation.
+
+df = ratings.merge(movies, on='movieId')
+df = pd.DataFrame(pd.pivot_table(df, index='title', columns='userId', values='rating', fill_value=0))
+
+distance_matrix = pairwise_distances(df, metric='correlation')
+x= pd.DataFrame(distance_matrix)
+x
+df[df.index.str.contains('Godfather')]
+indices = list(df.index) 
+indices.index('Godfather, The (1972)')
+similar_indices = (distance_matrix[3499].argsort()[1:6])
+for i in similar_indices:
+  print(indices[i])
